@@ -14,7 +14,8 @@
 // -----------------------------
 
 /* Private global variables */
-static size_t sampleSize;
+
+static size_t sampleSize;   // Number of results
 
 /* Private functions */
 
@@ -35,6 +36,18 @@ static double getPoint( double *coefficients, double* initialValues, size_t orde
 
 	// Result
 	return initialValues[0] + step * sum;
+}
+
+/**
+ * Calculates the next iteration of a derivative.
+ * Used when the order is higher than one.
+ *
+ * @param values Current conditions (e.g. [Y(t_n), Y'(t_n)]).
+ * @param step Initial time.
+ * @return Value of the next iteration.
+ */
+static double nextValue( double* values, double step ) {
+	return values[0] + step * values[1];
 }
 
 

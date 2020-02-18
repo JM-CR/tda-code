@@ -23,7 +23,7 @@
 /* Function prototypes */
 
 /**
- * Sets the number of desire results for the Euler's method.
+ * Sets the number of desired results for the Euler's method.
  * This function must be called before processData().
  *
  * @param size Number of results to process.
