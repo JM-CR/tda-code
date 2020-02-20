@@ -8,17 +8,12 @@
 // -----------------------------
 // System headers
 // -----------------------------
+#include <stdbool.h>
 
 
 // -----------------------------
 // Public interface
 // -----------------------------
-
-/* Constants */
-
-/* Types declarations */
-
-/* Global variables */
 
 /* Function prototypes */
 
@@ -31,13 +26,15 @@
 void setSampleSize( unsigned int size );
 
 /**
- * Solves an EDO using the Euler's method.
+ * Solves an EDO using the Euler's method and results are saved in the 
+ * file 'solucion.dat' in GNUPlot format.
+ *
  * The number of results depend on the previous call of setSampleSize().
  *
- * @param steps Times to traverse.
  * @param coefficients EDO's coefficients starting with the highest derivative.
- * @param initialValues Initial conditions for the EDO.
+ * @param initialValues Initial conditions starting with the highest order.
  * @param order Exponent of the greatest derivative.
- * @return Results at each step.
+ * @param steps Times to traverse.
+ * @return True if all operations were correct.
  */
-double *processData( double *steps, double *coefficients, double *initialValues, size_t order );
+bool processData( double *coefficients, double *initialValues, size_t order, double *steps );
