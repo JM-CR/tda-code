@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
+
 #include "model.h"
+#include "gnuplot.h"
 
 
 // -----------------------------
@@ -65,6 +67,20 @@ static double nextValue( double* values, double step ) {
 	return values[0] + step * values[1];
 }
 
+/**
+ * Sends specific commands to GNUPlot.
+ */
+static void createGraph( void ) {
+    char *commands[] = {
+        "set title 'Euler approximation'",
+        "set xlabel 'Time (s)'",
+        "set ylabel 'Samples",
+        "plot 'solution.dat' u 1:2 title '' with lines"
+    };
+    int length = sizeof(commands) / sizeof(char *);
+    plot(commands, length);
+}
+
 
 // -----------------------------
 // Public elements
@@ -82,6 +98,7 @@ bool processData( double *coefficients, double *initialValues, size_t order, dou
 		return false;
 
 	// Euler
+	removeFile("solution.dat");
 	double results[order + 1];
 	for ( unsigned int i = 0; i < sampleSize; ++i ) {
 		// Save time
@@ -90,6 +107,7 @@ bool processData( double *coefficients, double *initialValues, size_t order, dou
 		// Save results
 		for ( int j = order - 1, current = 1; j >= 0; --j )
 			results[current++] = initialValues[j];
+		saveState("solution.dat", results, order + 1);
 		
 		// Values for the next loop
 		double tempValue = getPoint(coefficients, initialValues, order, steps[1], steps[i]);
@@ -100,5 +118,7 @@ bool processData( double *coefficients, double *initialValues, size_t order, dou
 		initialValues[0] = tempValue;
 	}
 
+	// Plot results
+	createGraph();
 	return true;
 }
