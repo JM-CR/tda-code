@@ -32,7 +32,7 @@ static size_t sampleSize;   // Number of results
  * @return Point at given time.
  */
 static double evaluate( double t ) {
-	return sin(4*3.1416*t);
+	return 10*sin(4*3.1416*t);
 }
 
 /**
@@ -41,18 +41,18 @@ static double evaluate( double t ) {
  * @param coefficients EDO's coefficients starting with the highest derivative.
  * @param initialValues Initial conditions at given time.
  * @param order Exponent of the greatest derivative.
- * @param step d_t.
+ * @param stepSize d_t.
  * @param time Time to calculate.
  * @return Approximate point Yn.
  */
-static double getPoint( double *coefficients, double* initialValues, size_t order, double step, double time ) {
+static double getPoint( double *coefficients, double* initialValues, size_t order, double stepSize, double time ) {
 	// Cumulative calculations
 	double sum = evaluate(time);
 	for ( unsigned int i = 0; i < order; ++i )
 		sum += coefficients[i] * initialValues[i];
 
 	// Result
-	return initialValues[0] + step * sum;
+	return initialValues[0] + stepSize * sum;
 }
 
 /**
@@ -60,11 +60,42 @@ static double getPoint( double *coefficients, double* initialValues, size_t orde
  * Used when the order is higher than one.
  *
  * @param values Current conditions (e.g. [Y(t_n), Y'(t_n)]).
- * @param step Initial time.
+ * @param time Time to calculate.
  * @return Value of the next iteration.
  */
-static double nextValue( double* values, double step ) {
-	return values[0] + step * values[1];
+static double nextValue( double* values, double time ) {
+	return values[0] + time * values[1];
+}
+
+/**
+ * Implements the Euler algorithm and save results at 'solution.dat' file.
+ *
+ * @param coefficients EDO's coefficients starting with the highest derivative.
+ * @param initialValues Initial conditions starting with the highest order.
+ * @param order Exponent of the greatest derivative.
+ * @param steps Times to traverse.
+ */
+static void eulerMethod( double *coefficients, double *initialValues, size_t order, double *steps ) {
+	double results[order + 1];   /* For each iteration */
+	double stepSize = steps[1] - steps[0];   /* d_t */
+
+	// Start approximation
+	for ( unsigned int i = 0; i < sampleSize; ++i ) {
+		// Save results
+		for ( int j = order - 1, current = 1; j >= 0; --j )
+			results[current++] = initialValues[j];   /* Points */
+
+		results[0] = steps[i];   /* Time */
+		saveState("solution.dat", results, order + 1);
+		
+		// Values for the next loop
+		double lastPoint = getPoint(coefficients, initialValues, order, stepSize, steps[i]);
+		for ( unsigned int j = order - 1; j > 0; --j ) {
+			double values[2] = { initialValues[j], initialValues[j - 1] };
+			initialValues[j] = nextValue(values, steps[i]);
+		}
+		initialValues[0] = lastPoint;
+	}
 }
 
 /**
@@ -97,26 +128,9 @@ bool processData( double *coefficients, double *initialValues, size_t order, dou
 	if ( coefficients == NULL || initialValues == NULL || steps == NULL )
 		return false;
 
-	// Euler
+	// Clean up and calculations
 	removeFile("solution.dat");
-	double results[order + 1];
-	for ( unsigned int i = 0; i < sampleSize; ++i ) {
-		// Save time
-		results[0] = steps[i]; 
-
-		// Save results
-		for ( int j = order - 1, current = 1; j >= 0; --j )
-			results[current++] = initialValues[j];
-		saveState("solution.dat", results, order + 1);
-		
-		// Values for the next loop
-		double tempValue = getPoint(coefficients, initialValues, order, steps[1], steps[i]);
-		for ( unsigned int j = order - 1; j > 0; --j ) {
-			double values[2] = { initialValues[j], initialValues[j - 1] };
-			initialValues[j] = nextValue(values, steps[i]);
-		}
-		initialValues[0] = tempValue;
-	}
+	eulerMethod(coefficients, initialValues, order, steps);
 
 	// Plot results
 	createGraph();
