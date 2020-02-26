@@ -13,10 +13,7 @@
 /* Types declarations */
 
 /* Global variables */
-int order;
-int initial_values[];
-int coefficients[];
-int steps[];
+
 
 /* Function prototypes */
 
@@ -37,11 +34,10 @@ void addCoefficient(int coef);
 /**
  * Appends data to an array of steps 
  *
- * @param initial_date the initial date to predict
- * @param final_date the final date to predict
- * @param time_step the large of every step begin the initial date and end with the final date
+ * @param lapso the lapse of time
+ * @param numMuestras the width of the slices of the lapse
  */
-void makeSteps(int initial_date, int final_date, int time_step);
+bool makeSteps(double lapso, double numMuestras);
 /**
  * Send order 
  *

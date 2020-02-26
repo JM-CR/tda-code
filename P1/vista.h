@@ -13,38 +13,36 @@
 /* Types declarations */
 
 /* Global variables */
-int order;
-int span;
-int steps;
+
 
 /* Function prototypes */
 
 /**
  * Ask data of initial values
- *
+ * @param text which initial value we want
  */
-void askInitialValue();
+double askInitialValue(char *text);
 
 /**
  * Ask coefficients of the differential equation
- *
+ * @param text which cofficient we want
  */
-void askCoefficients();
+double askCoefficients(char *text);
 
 /**
  * Ask span of time  
  *
  */
-void askSpan();
+double askSpan();
 
 /**
  * Ask steps to divide the span of time
  *
  */
-void askSteps();
+double askSteps();
 
 /**
  * Ask order of the equation 
  *
  */
-void askOrder();
+int askOrder();

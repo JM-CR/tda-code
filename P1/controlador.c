@@ -4,18 +4,20 @@
 // ------------------------------------------
 #include <stdio.h>
 #include "controlador.h"
-
+#include "model.h"
 
 // -----------------------------
-// Public elements
+// Private elements
 // -----------------------------
 
-int order;
-int initial_values[order];
-int coefficients[order];
-int steps[1000];
-int iValues = 0;
-int iCoeff = 0;
+/* Private global variables */
+
+static int order;
+static int initial_values[order];
+static int coefficients[order];
+static int steps[1000];
+static int iValues = 0;
+static int iCoeff = 0;
 /* Implementation of the public functions */
 
 void addInitialValue(int value) {
@@ -25,7 +27,7 @@ void addInitialValue(int value) {
 }
 
 void addCoefficient(int coef){
-    coeffients[iCoeff] = coef;
+    coefficients[iCoeff] = coef;
     iCoeff++;
 }
 
@@ -33,12 +35,14 @@ void addOrder(int or){
     order=or;
 }
 
-void makeSteps(int lapso, int numMuestras ){
+bool makeSteps(double lapso, double numMuestras ){
     double v = lapso/numMuestras;
     for (int i = 0 ; i<v; i++){
         steps[i] = i;
     }
-
+    int muestra = (int)numMuestras;
+    setSampleSize(muestra);
+    return processData(coefficients,initial_values,order,v)
 }
 
 
