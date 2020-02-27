@@ -6,9 +6,10 @@
 // ------------------------------------------
 // System and aplication specific headers
 // ------------------------------------------
-#include <stddef.h>
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
 #include <math.h>
 
 #include "model.h"
@@ -17,6 +18,12 @@
 // -----------------------------
 // Private elements
 // -----------------------------
+
+/* Private macros and constants */
+
+#define PI 3.1416
+#define DESV 0.2591510712
+#define AVG 0.15
 
 /* Private global variables */
 
@@ -31,7 +38,7 @@ static size_t sampleSize;   // Number of results
  * @return Point at given time.
  */
 static double evaluate( double t ) {
-	return 10*sin(4*3.1416*t);
+	return 10*sin(2*PI / 2) + DESV * (AVG + (rand() % 100) * 0.1 );
 }
 
 /**
