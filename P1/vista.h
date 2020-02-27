@@ -1,5 +1,5 @@
 // View for the program.
-// Author: Gabriela Rojano
+// Author: Rodrigo Roberto Arce
 // File: vista.h
 // Date: 27/02/20
 
