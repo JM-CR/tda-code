@@ -13,6 +13,11 @@
 /* Function prototypes */
 
 /**
+ * Introduction to the program.
+ */
+void initialRun( void );
+
+/**
  * Ask initial values.
  *
  * @param text which initial value we want

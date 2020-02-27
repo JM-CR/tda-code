@@ -50,6 +50,19 @@ static double readValue( void ) {
 
 /* Implementation of the public functions */
 
+void initialRun(void) {
+    printf(
+        "\nEste programa grafica la solución de una EDO usando GNUPlot."
+        "\n\nLa ecuación será introducida de la siguiente forma:"
+        "\n\t1. Orden (n)."
+        "\n\t2. Coeficientes de la ecuación (c)."
+        "\n\t3. Valores iniciales (y)."
+        "\n\t4. Número de muestras y tiempo final a graficar."
+        "\n\n\ty_n + c_n*y_(n-1) + c_(n-1)*y_(n-2) + ... + c_1*y_1 = f(t) "        
+        "\n\n"
+    );
+}
+
 double askInitialValue( char *text ){
     printf("Ingresa valor inicial y_%s: ",text);
     return readValue();

@@ -1,4 +1,4 @@
-// Author: Hector Jair Hernandez Cortes
+// Author: Josue Mosiah Contreras Rocha
 // File: main.c
 // Date: 22/02/20
 
@@ -10,23 +10,31 @@
 #include "controlador.h"
 
 int main(void) {
-    // Call view and controller
-    int order = askOrder();
-    addOrder(order);
+    // Presentation
+    initialRun();
 
+    // Aks order
+    int order = askOrder();
+    addOrder(order); printf("\n");
+
+    // Ask coefficients
     char buffer[2];
     for ( int i = 0; i < order; i++ ) {
         sprintf(buffer, "%d", order - i);
         addCoefficient(askCoefficients(buffer));
     }
-    
+    printf("\n");
+
+    // Ask initial values
     for ( int i = 0; i < order; i++ ) {
         sprintf(buffer, "%d", order - i);
         addInitialValue(askInitialValue(buffer));
     }
+    printf("\n");
 
-    double span = askSpan();
-    int samples = askSampleSize();
+    // Ask number of time points
+    double span = askSpan(); printf("\n");
+    int samples = askSampleSize(); printf("\n");
 
     // Call model
     (void) makeSteps(span, samples);
