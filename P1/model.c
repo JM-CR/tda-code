@@ -12,7 +12,6 @@
 #include <math.h>
 
 #include "model.h"
-#include "gnuplot.h"
 
 
 // -----------------------------

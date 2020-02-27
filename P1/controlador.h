@@ -1,46 +1,51 @@
+// Implementation for the controller.
+// Author: Gabriela Rojano
+// File: controlador.h
+// Date: 17/02/20
+
+#ifndef CONTROLADOR_H
+#define CONTROLADOR_H
 
 // -----------------------------
 // System headers
 // -----------------------------
+#include <stdbool.h>
+#include "model.h"
 
 
 // -----------------------------
 // Public interface
 // -----------------------------
 
-/* Constants */
-
-/* Types declarations */
-
-/* Global variables */
-
-
 /* Function prototypes */
 
 /**
- * Appends data to an array of initial values
+ * Appends data to an array of initial values.
  *
  * @param value the initial value
  */
-void addInitialValue(int value);
+void addInitialValue(double value);
 
 /**
- * Appends data to an array of coefficients of the differential equation
+ * Appends data to an array of coefficients of the differential equation.
  *
  * @param coef the coefficientof each ordered
  */
-void addCoefficient(int coef);
+void addCoefficient(double coef);
 
 /**
- * Appends data to an array of steps 
+ * Appends data to an array of steps. 
  *
- * @param lapso the lapse of time
- * @param numMuestras the width of the slices of the lapse
+ * @param span the lapse of time
+ * @param numMuestras the width of slices
  */
-bool makeSteps(double lapso, double numMuestras);
+bool makeSteps(double span, int numMuestras);
+
 /**
- * Send order 
+ * Sends the order.
  *
  * @param or the order of the EDO
  */
 void addOrder(int or);
+
+#endif

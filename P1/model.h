@@ -5,10 +5,14 @@
 // File: model.h
 // Date: 17/02/20
 
+#ifndef MODEL_H
+#define MODEL_H
+
 // -----------------------------
 // System headers
 // -----------------------------
 #include <stdbool.h>
+#include "gnuplot.h"
 
 
 // -----------------------------
@@ -38,3 +42,5 @@ void setSampleSize( unsigned int size );
  * @return True if all operations were correct.
  */
 bool processData( double *coefficients, double *initialValues, size_t order, double *steps );
+
+#endif

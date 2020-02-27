@@ -1,48 +1,44 @@
+// View for the program.
+// Author: Gabriela Rojano
+// File: vista.h
+// Date: 27/02/20
 
-// -----------------------------
-// System headers
-// -----------------------------
-
+#ifndef VISTA_H
+#define VISTA_H
 
 // -----------------------------
 // Public interface
 // -----------------------------
 
-/* Constants */
-
-/* Types declarations */
-
-/* Global variables */
-
-
 /* Function prototypes */
 
 /**
- * Ask data of initial values
+ * Ask initial values.
+ *
  * @param text which initial value we want
  */
 double askInitialValue(char *text);
 
 /**
- * Ask coefficients of the differential equation
+ * Ask coefficients for the differential equation.
+ *
  * @param text which cofficient we want
  */
 double askCoefficients(char *text);
 
 /**
- * Ask span of time  
- *
+ * Asks span of time.
  */
-double askSpan();
+double askSpan(void);
 
 /**
- * Ask steps to divide the span of time
- *
+ * Asks steps to divide the span of time.
  */
-double askSteps();
+int askSampleSize(void);
 
 /**
- * Ask order of the equation 
- *
+ * Asks order of the equation.
  */
-int askOrder();
+int askOrder(void);
+
+#endif

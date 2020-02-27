@@ -3,6 +3,9 @@
 // File: gnuplot.h
 // Date: 17/02/20
 
+#ifndef GNUPLOT_H
+#define GNUPLOT_H
+
 // -----------------------------
 // System headers
 // -----------------------------
@@ -40,3 +43,5 @@ void saveState( const char *file, double data[], size_t size );
  * @param size Number of commands.
  */
 void plot( char *commands[], size_t size );
+
+#endif

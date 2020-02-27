@@ -1,8 +1,12 @@
+// See vista.h for more information.
+// Author: Gabriela Rojano
+// File: vista.c
+// Date: 27/02/20
+
 // ------------------------------------------
 // System and aplication specific headers
 // ------------------------------------------
 #include <stdio.h>
-#include "controlador.h"
 #include "vista.h"
 
 
@@ -14,37 +18,35 @@
 
 double askInitialValue( char *text ){
     double value;
-    printf("Ingresa valor inicial %s: \n",text);
+    printf("Ingresa valor inicial y_%s: ",text);
     scanf("%lf", &value);
     return value;
 }
 
-double askCoefficient( char *text ){
+double askCoefficients( char *text ) {
     double value;
-    printf("Ingresa valor inicial %s: \n",text);
+    printf("Ingresa el coeficiente c_%s: ",text);
     scanf("%lf", &value);
     return value;
 }
 
-double askSpan(){ 
+double askSpan(void){ 
     double span;
-    printf("Ingresa el numero del lapso:\n");
+    printf("Tiempo final a calcular (tf): ");
     scanf("%lf", &span);
     return span;
 }
 
-double askSteps(){
-    double steps;
-    printf("Ingresa el numero en el qeu se dividira el lapso :\n");
-    scanf("%lf", &steps);
-    return steps;
+int askSampleSize(void) {
+    int samples;
+    printf("Número de muestras entre [0, tf): ");
+    scanf("%d", &samples);
+    return samples;
 }
 
-int askOrder(){
+int askOrder(void){
     int order;
-    printf("Ingresa el orden de la EDO:\n");
+    printf("Ingresa el orden de la EDO: ");
     scanf("%d", &order);
-    return order;
-    
+    return order;  
 }
-
