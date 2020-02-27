@@ -38,7 +38,7 @@ static size_t sampleSize;   // Number of results
  * @return Point at given time.
  */
 static double evaluate( double t ) {
-	return 10*sin(2*PI / 2) + DESV * (AVG + (rand() % 100) * 0.1 );
+	return sin(2*PI*t) + DESV * (AVG + (rand() % 100) * 0.1 );
 }
 
 /**
