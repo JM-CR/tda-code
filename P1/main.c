@@ -17,12 +17,12 @@ int main(void) {
     char buffer[2];
     for ( int i = 0; i < order; i++ ) {
         sprintf(buffer, "%d", order - i);
-        askCoefficients(buffer);
+        addCoefficient(askCoefficients(buffer));
     }
     
     for ( int i = 0; i < order; i++ ) {
         sprintf(buffer, "%d", order - i);
-        askInitialValue(buffer);
+        addInitialValue(askInitialValue(buffer));
     }
 
     double span = askSpan();
