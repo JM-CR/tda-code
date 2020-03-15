@@ -235,9 +235,9 @@ void printRandomRoute( Node_t *initialNode, int pathNumber, int rows, int cols )
 		coordinates[x][y] = '*';
 
 		// Update coordinates
-		if ( value == UP ) 		   y = (y > 0) ? (y - 1) : y;
+		if ( value == UP ) --y;
 		else if ( value == DOWN  ) ++y;
-		else if ( value == LEFT  ) x = (x > 0) ? (x - 1) : x;
+		else if ( value == LEFT  ) --x;
 		else if ( value == RIGHT ) ++x;
 	}
 	printRoute(rows, cols, coordinates);
