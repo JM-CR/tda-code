@@ -9,6 +9,7 @@
 // ------------------------------------------
 #include <stdlib.h>
 #include "graph.h"
+#include "dijkstra.h"
 
 int main(void) {
 	// Create
