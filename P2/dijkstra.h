@@ -25,8 +25,9 @@ typedef struct path {
  * Finds the optimal route between two nodes.
  *
  * @param baseNode Root node.
+ * @param totalNodes Number of nodes the graph has.
  * @param from Starting id.
  * @param to Ending id.
  * @return Calculated results.
  */
-Path_t *calculatePath( Node_t *baseNode, unsigned int from, unsigned int to );
+Path_t *calculatePath( Node_t *baseNode, size_t totalNodes, unsigned int from, unsigned int to );

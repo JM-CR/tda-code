@@ -50,7 +50,7 @@ static int8_t getMask( Direction_t from ) {
  * @param insertNode Node to insert.
  * @param slot Insertion's orientation.
  */
-static void setSlot( Node_t **baseNode, Node_t **insertNode, Direction_t slot ) {
+extern void setSlot( Node_t **baseNode, Node_t **insertNode, Direction_t slot ) {
 	// Update node
 	addConnection(baseNode, insertNode, slot);
 	(*baseNode)->c_state |= getMask(slot);

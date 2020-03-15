@@ -13,17 +13,12 @@
 
 int main(void) {
 	// Create
-	// int cols = 3;
-	// int rows = 3;
-	// Node_t *root = createGraph(rows, cols);
-	// printRandomRoute(root, 4, rows, cols);
+	int cols = 5;
+	int rows = 1;
+	Node_t *root = createGraph(rows, cols);
 
-	// Find nodes
-	// int id[] = { 1, 3, 2 };
-	// size_t size = sizeof(id) / sizeof(int);
-	// Node_t **result = findNode(root, id, size);
-	// for( int i = 0; i < size; ++i )
-	//	 printNode(result[i]);
+	// Dijkstra's test
+	Path_t *path = calculatePath(root, cols * rows, 1, 4);
 
     return 0;
 }
