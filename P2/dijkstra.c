@@ -18,9 +18,14 @@
 
 /* Private macros and constants */
 
-/* Private types */
+#define VISIT_MASK 0x10
 
 /* Private global variables */
+
+static Node_t **vertex;
+static Node_t **previous;
+static unsigned int *sdf;
+static unsigned int TOTAL;
 
 /* Private functions */
 
@@ -68,35 +73,98 @@ static Node_t *tempGraph( void ) {
 /**
  * Allocates memory for an array and initializes its values.
  *
- * @param value Value to set.
  * @param total Number of elements create.
  * @return Array with the initial values.
  */
-static unsigned int *allocateWith( unsigned int value, size_t total ) {
+static unsigned int *allocateZero( size_t total ) {
 	unsigned int *array = calloc(total, sizeof(int));
 	for ( unsigned int i = 0; i < total; ++i ) {
-		array[i] = value;
+		array[i] = UINT_MAX;
 	}
 	return array;
 }
 
 /**
- * Checks if a node has already been visited.
+ * Allocates memory for an array and initializes its values.
  *
- * @param id Node to check.
- * @param visited All the visited nodes.
- * @param size Number of elements in the visited array.
- * @return True if the node has been visited; otherwise false
+ * @param total Number of elements create.
+ * @return Array with the initial values.
  */
-static bool visitedNode( unsigned int id, unsigned int visited[], size_t size ) {
-	bool flag = false;
-	for ( unsigned int i = 0; i < size; ++i ) {
-		if ( *(visited + i) == id ) {
-			flag = true;
+static Node_t **allocateNull( size_t total ) {
+	Node_t **array = calloc(total, sizeof(Node_t));
+	for ( unsigned int i = 0; i < total; ++i ) {
+		array[i] = NULL;
+	}
+	return array;
+}
+
+/**
+ * Marks a node as visited.
+ *
+ * @param node Node to set.
+ */
+static void setVisit( Node_t **node ) {
+	// Update node
+	(*node)->c_state |= VISIT_MASK;
+}
+
+/**
+ * Checks if a node has been visited.
+ *
+ * @param node Node to check.
+ * @return True if the node was visited; otherwise, false.
+ */
+static bool wasVisited( Node_t *node ) {
+	return (node->c_state & VISIT_MASK) == VISIT_MASK ? true : false;
+}
+
+/**
+ * Calculates the cost between two nodes.
+ *
+ * @param first First node.
+ * @param second Second node.
+ * @return Path cost.
+ */
+static unsigned int pathCost( Node_t *first, Node_t *second ) {
+	int total = first->cost - second->cost;
+	return abs(total);
+}
+
+/**
+ * Looks for a node in the vertex array.
+ *
+ * @param node Node to search.
+ * @return Array's position; otherwise, -1.
+ */
+static int getPosition( Node_t *node ) {
+	unsigned int position = -1;
+	for ( unsigned int i = 0; i < TOTAL; ++i ) {
+		if ( node == vertex[i] ) {
+			position = i;
 			break;
 		}
 	}
-	return flag;
+	return position;
+}
+
+/**
+ * Inserts a node in the vertex array.
+ * 
+ * @param node Node to insert.
+ */
+static void insertVertex( Node_t *node ) {
+	static unsigned int lastIndex = 0;
+	vertex[lastIndex++] = node;
+}
+
+/**
+ * Implementes the dijkstra's algorithm.
+ *
+ * @param start Starting node.
+ * @param end Ending id.
+ */
+static void process( Node_t *start, unsigned int end ) {
+
 }
 
 
@@ -106,21 +174,25 @@ static bool visitedNode( unsigned int id, unsigned int visited[], size_t size ) 
 
 /* Implementation of the public functions */
 
-Path_t *calculatePath( Node_t *baseNode, size_t totalNodes, unsigned int from, unsigned int to ) {
+Path_t *calculatePath( Node_t *start, size_t totalNodes, unsigned int end ) {
 	// Guards
-	if ( baseNode == NULL || totalNodes == 0 || from == to ) {
+	if ( start == NULL || totalNodes == 0 || start->id == end ) {
 		return NULL;
 	}
 	
 	// Initialize elements
 	Node_t *base = tempGraph();
-	unsigned int *sdf = allocateWith(UINT_MAX, totalNodes);
-	unsigned int *previous = allocateWith(0, totalNodes);
-	unsigned int *visited = allocateWith(0, totalNodes);
+	TOTAL = totalNodes;
+	sdf = allocateZero(totalNodes);
+	vertex = allocateNull(totalNodes);
+	previous = allocateNull(totalNodes);
+
+	// Dijkstra
+	process(base, end);
 
 	// Save results
 	Path_t *path = malloc(sizeof(Path_t));
 	path->sdf = *sdf;
-	path->route = previous;
+	path->route = NULL;
 	return path;
 }

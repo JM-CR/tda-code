@@ -3,6 +3,9 @@
 // File: dijkstra.h
 // Date: 15/03/20
 
+#ifndef DIJKSTRA_H
+#define DIJKSTRA_H
+
 // -----------------------------
 // System headers
 // -----------------------------
@@ -24,10 +27,11 @@ typedef struct path {
 /**
  * Finds the optimal route between two nodes.
  *
- * @param baseNode Root node.
- * @param totalNodes Number of nodes the graph has.
- * @param from Starting id.
- * @param to Ending id.
+ * @param start Initial node.
+ * @param totalNodes Number of nodes in the graph.
+ * @param end Destination id.
  * @return Calculated results.
  */
-Path_t *calculatePath( Node_t *baseNode, size_t totalNodes, unsigned int from, unsigned int to );
+Path_t *calculatePath( Node_t *start, size_t totalNodes, unsigned int end );
+
+#endif
