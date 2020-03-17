@@ -28,10 +28,9 @@ typedef struct path {
  * Finds the optimal route between two nodes.
  *
  * @param start Initial node.
- * @param totalNodes Number of nodes in the graph.
  * @param end Destination id.
  * @return Calculated results.
  */
-Path_t *calculatePath( Node_t *start, size_t totalNodes, unsigned int end );
+Path_t *calculatePath( Node_t *start, unsigned int end );
 
 #endif

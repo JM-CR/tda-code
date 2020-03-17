@@ -18,7 +18,7 @@ int main(void) {
 	Node_t *root = createGraph(rows, cols);
 
 	// Dijkstra's test
-	Path_t *path = calculatePath(root, 5, 4);
+	Path_t *path = calculatePath(root, 5);
 
     return 0;
 }

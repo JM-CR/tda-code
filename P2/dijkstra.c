@@ -20,12 +20,17 @@
 
 #define VISIT_MASK 0x10
 
-/* Private global variables */
+/* Private types */
 
-static Node_t **vertex;
-static Node_t **previous;
-static unsigned int *sdf;
-static unsigned int TOTAL;
+struct container {
+	Node_t *node;
+	Node_t *previous;
+	bool visited;
+	unsigned int sdf;
+	struct container *next;
+};
+
+typedef struct container Container_t;   // Dijkstra's container
 
 /* Private functions */
 
@@ -71,51 +76,44 @@ static Node_t *tempGraph( void ) {
 }
 
 /**
- * Allocates memory for an array and initializes its values.
+ * Creates a container used to track the Dijkstra's state.
  *
- * @param total Number of elements create.
- * @return Array with the initial values.
+ * @param node Node to track.
+ * @param previous Previous visited node.
+ * @param visited Tracking state.
+ * @param sdf Initial shortest distance.
+ * @return Pointer to the container.
  */
-static unsigned int *allocateZero( size_t total ) {
-	unsigned int *array = calloc(total, sizeof(int));
-	for ( unsigned int i = 0; i < total; ++i ) {
-		array[i] = UINT_MAX;
+static Container_t* createContainer( Node_t *node, Node_t *previous, bool visited, unsigned int sdf ) {
+	Container_t *container = malloc(sizeof(Container_t));
+	container->node = node;
+	container->previous = previous;
+	container->visited = visited;
+	container->sdf = sdf;
+	container->next = NULL;
+	return container;
+}
+
+/**
+ * Adds a container at the end of the linked list.
+ * 
+ * @param root First container.
+ * @param next Container to add.
+ */
+static void addContainer( Container_t *root, Container_t *next ) {
+	// Guards
+	if ( root == NULL || next == NULL ) {
+		return;
 	}
-	return array;
-}
 
-/**
- * Allocates memory for an array and initializes its values.
- *
- * @param total Number of elements create.
- * @return Array with the initial values.
- */
-static Node_t **allocateNull( size_t total ) {
-	Node_t **array = calloc(total, sizeof(Node_t));
-	for ( unsigned int i = 0; i < total; ++i ) {
-		array[i] = NULL;
+	// Find last
+	Container_t *current = root;
+	while ( current->next != NULL ) {
+		current = current->next;
 	}
-	return array;
-}
-
-/**
- * Marks a node as visited.
- *
- * @param node Node to set.
- */
-static void setVisit( Node_t **node ) {
-	// Update node
-	(*node)->c_state |= VISIT_MASK;
-}
-
-/**
- * Checks if a node has been visited.
- *
- * @param node Node to check.
- * @return True if the node was visited; otherwise, false.
- */
-static bool wasVisited( Node_t *node ) {
-	return (node->c_state & VISIT_MASK) == VISIT_MASK ? true : false;
+	
+	// Add
+	current->next = next;
 }
 
 /**
@@ -131,40 +129,46 @@ static unsigned int pathCost( Node_t *first, Node_t *second ) {
 }
 
 /**
- * Looks for a node in the vertex array.
+ * Finds a container in the linked list.
+ * New containers are added to the end of the list.
  *
+ * @param root Root container.
  * @param node Node to search.
- * @return Array's position; otherwise, -1.
+ * @param createNew Create new container if it does not exist.
+ * @return Pointer to the container.
  */
-static int getPosition( Node_t *node ) {
-	unsigned int position = -1;
-	for ( unsigned int i = 0; i < TOTAL; ++i ) {
-		if ( node == vertex[i] ) {
-			position = i;
-			break;
-		}
+static Container_t *findContainer( Container_t *root, Node_t *node, bool createNew ) {
+	// Guards
+	if ( node == NULL || root == NULL ) {
+		return NULL;
 	}
-	return position;
+	
+	// Traverse list
+	Container_t *match = root;
+	while ( match->node != node || match != NULL ) {
+		match = match->next;
+	}
+
+	// Results
+	Container_t *result = NULL;
+	if ( match == NULL && createNew ) {
+		Container_t *temp = createContainer(node, NULL, false, UINT_MAX);
+		addContainer(root, temp);
+		result = temp;
+	} else if ( match != NULL ) {
+		result = match;
+	}
+	return result;
 }
 
 /**
- * Inserts a node in the vertex array.
- * 
- * @param node Node to insert.
- */
-static void insertVertex( Node_t *node ) {
-	static unsigned int lastIndex = 0;
-	vertex[lastIndex++] = node;
-}
-
-/**
- * Implementes the dijkstra's algorithm.
+ * Implements the dijkstra's algorithm.
  *
  * @param start Starting node.
  * @param end Ending id.
  */
-static void process( Node_t *start, unsigned int end ) {
-
+static void dijkstra( Node_t *start, unsigned int end ) {
+	
 }
 
 
@@ -174,25 +178,22 @@ static void process( Node_t *start, unsigned int end ) {
 
 /* Implementation of the public functions */
 
-Path_t *calculatePath( Node_t *start, size_t totalNodes, unsigned int end ) {
+Path_t *calculatePath( Node_t *start, unsigned int end ) {
 	// Guards
-	if ( start == NULL || totalNodes == 0 || start->id == end ) {
+	if ( start == NULL || start->id == end ) {
 		return NULL;
 	}
 	
 	// Initialize elements
 	Node_t *base = tempGraph();
-	TOTAL = totalNodes;
-	sdf = allocateZero(totalNodes);
-	vertex = allocateNull(totalNodes);
-	previous = allocateNull(totalNodes);
+	start = base;
 
-	// Dijkstra
-	process(base, end);
+	// Processing
+	dijkstra(start, end);
 
 	// Save results
 	Path_t *path = malloc(sizeof(Path_t));
-	path->sdf = *sdf;
+	path->sdf = 0;
 	path->route = NULL;
 	return path;
 }
