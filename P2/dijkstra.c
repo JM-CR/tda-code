@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include "dijkstra.h"
 
 
@@ -145,7 +146,7 @@ static Container_t *findContainer( Container_t *root, Node_t *node, bool createN
 	
 	// Traverse list
 	Container_t *match = root;
-	while ( match->node != node || match != NULL ) {
+	while ( match != NULL && match->node != node ) {
 		match = match->next;
 	}
 
@@ -162,13 +163,77 @@ static Container_t *findContainer( Container_t *root, Node_t *node, bool createN
 }
 
 /**
+ * Prints the container's content.
+ * 
+ * @param container Container to print.
+ */
+static void printContainer( Container_t *container ) {
+	// Guard
+	if ( container == NULL ) {
+		return;
+	}
+
+	// Print
+	printf("\n-------------------\n");
+	printNode(container->node);
+	printf("\nSDF: %u", container->sdf);
+	printf("\nVisited: %d", container->visited);
+	printf("\nPrevious: %p\n", container->previous);
+}
+
+/**
  * Implements the dijkstra's algorithm.
  *
  * @param start Starting node.
  * @param end Ending id.
+ * @return Linked list with the results of the algorithm.
  */
-static void dijkstra( Node_t *start, unsigned int end ) {
-	
+static Container_t *dijkstra( Node_t *start, unsigned int end ) {
+	// Initialize
+	Node_t *current = start;
+	Container_t *root = createContainer(start, NULL, false, 0);
+	Direction_t searchOrder[] = { UP, RIGHT, LEFT, DOWN };
+
+	// Find path
+	bool found = false;
+	while ( !found ) {
+		// Traverse directions
+		Node_t *bestAdjacent = NULL;
+		for ( int i = 0, tempSDF = UINT_MAX; i < 4; ++i ) {
+			// Guards
+			Node_t *adjacent = getAdjacentNode(current, searchOrder[i]);
+			Container_t *adjacentState = findContainer(root, adjacent, true);
+			if ( adjacent == NULL || adjacentState->visited == true ) {
+				continue;
+			}
+
+			// Update values
+			Container_t *currentState = findContainer(root, current, true);
+			currentState->visited = true;
+
+			unsigned int cost = pathCost(current, adjacent);
+			adjacentState->sdf = cost + currentState->sdf;
+			adjacentState->previous = current;
+
+			// Best cost path
+			if ( adjacentState->sdf <= tempSDF ) {
+				bestAdjacent = adjacent;
+				tempSDF = adjacentState->sdf;
+			}
+		}
+
+		// Next iteration
+		if ( current->id == end ) {	
+			found = true;	
+		} else if ( bestAdjacent == NULL ) {
+			Container_t *currentState = findContainer(root, current, false);
+			current = currentState->previous;
+		} else {
+			current = bestAdjacent;
+		}
+	}
+
+	return root;
 }
 
 
@@ -184,12 +249,18 @@ Path_t *calculatePath( Node_t *start, unsigned int end ) {
 		return NULL;
 	}
 	
-	// Initialize elements
+	// Temporal elements
 	Node_t *base = tempGraph();
 	start = base;
 
 	// Processing
-	dijkstra(start, end);
+	Container_t *root = dijkstra(start, end);
+
+	// Temporal print
+	while ( root != NULL ) {
+		printContainer(root);
+		root = root->next;
+	}
 
 	// Save results
 	Path_t *path = malloc(sizeof(Path_t));
