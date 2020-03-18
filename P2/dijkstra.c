@@ -219,7 +219,6 @@ Path_t *calculatePath( Node_t *start, unsigned int end ) {
 		sdfTotal = sdfTotal + root->sdf;
 		root = root->next;
 	}
-	printf("el numero de nodos es: %d\n",i);
 
 	// Save results
 	Path_t *path = malloc(sizeof(Path_t));
