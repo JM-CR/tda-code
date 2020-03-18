@@ -17,10 +17,6 @@
 // Private elements
 // -----------------------------
 
-/* Private macros and constants */
-
-#define VISIT_MASK 0x10
-
 /* Private types */
 
 struct container {
@@ -34,47 +30,6 @@ struct container {
 typedef struct container Container_t;   // Dijkstra's container
 
 /* Private functions */
-
-/**
- * Creates a temporal graph; used to test the algorithm.
- *
- * @return Pointer to the root node.
- */
-static Node_t *tempGraph( void ) {
-	// Create nodes
-	Node_t **node = calloc(5, sizeof(Node_t));
-	node[0] = newNode(1, 0, NULL, 4, 0);
-	node[1] = newNode(2, 1, NULL, 4, 0);
-	node[2] = newNode(3, 6, NULL, 4, 0);
-	node[3] = newNode(4, 2, NULL, 4, 0);
-	node[4] = newNode(5, 4, NULL, 4, 0);
-
-	// Connect first node
-	setSlot(&node[0], &node[1], DOWN);
-	setSlot(&node[0], &node[2], RIGHT);
-
-	// Connect second node
-	setSlot(&node[1], &node[0], UP);
-	setSlot(&node[1], &node[2], DOWN);
-	setSlot(&node[1], &node[3], RIGHT);
-
-	// Connect third node
-	setSlot(&node[2], &node[0], LEFT);
-	setSlot(&node[2], &node[1], UP);
-	setSlot(&node[2], &node[3], DOWN);
-	setSlot(&node[2], &node[4], RIGHT);
-
-	// Connect forth node
-	setSlot(&node[3], &node[1], LEFT);
-	setSlot(&node[3], &node[2], UP);
-	setSlot(&node[3], &node[4], RIGHT);
-
-	// Connect fifth node
-	setSlot(&node[4], &node[2], UP);
-	setSlot(&node[4], &node[3], DOWN);
-
-	return node[0];
-}
 
 /**
  * Creates a container used to track the Dijkstra's state.
@@ -177,8 +132,12 @@ static void printContainer( Container_t *container ) {
 	printf("\n-------------------\n");
 	printNode(container->node);
 	printf("\nSDF: %u", container->sdf);
-	printf("\nVisited: %d", container->visited);
-	printf("\nPrevious: %p\n", container->previous);
+	printf("\nVisited: %s", container->visited ? "true" : "false");
+	if ( container->previous != NULL ) {
+		printf("\nPrevious: %d\n", container->previous->id);
+	} else {
+		printf("\nPrevious: %p\n", container->previous);
+	}
 }
 
 /**
@@ -197,26 +156,25 @@ static Container_t *dijkstra( Node_t *start, unsigned int end ) {
 	// Find path
 	bool found = false;
 	while ( !found ) {
-		// Traverse directions
+		// Look for adjacent nodes
 		Node_t *bestAdjacent = NULL;
+		Container_t *currentState = findContainer(root, current, true);
 		for ( int i = 0, tempSDF = UINT_MAX; i < 4; ++i ) {
 			// Guards
 			Node_t *adjacent = getAdjacentNode(current, searchOrder[i]);
 			Container_t *adjacentState = findContainer(root, adjacent, true);
-			if ( adjacent == NULL || adjacentState->visited == true ) {
+			if ( adjacent == NULL || adjacentState->visited || current->id == end ) {
 				continue;
 			}
 
 			// Update values
-			Container_t *currentState = findContainer(root, current, true);
-			currentState->visited = true;
-
 			unsigned int cost = pathCost(current, adjacent);
 			adjacentState->sdf = cost + currentState->sdf;
 			adjacentState->previous = current;
+			currentState->visited = true;
 
 			// Best cost path
-			if ( adjacentState->sdf <= tempSDF ) {
+			if ( adjacentState->sdf <= tempSDF && !adjacentState->visited ) {
 				bestAdjacent = adjacent;
 				tempSDF = adjacentState->sdf;
 			}
@@ -226,7 +184,6 @@ static Container_t *dijkstra( Node_t *start, unsigned int end ) {
 		if ( current->id == end ) {	
 			found = true;	
 		} else if ( bestAdjacent == NULL ) {
-			Container_t *currentState = findContainer(root, current, false);
 			current = currentState->previous;
 		} else {
 			current = bestAdjacent;
@@ -249,10 +206,6 @@ Path_t *calculatePath( Node_t *start, unsigned int end ) {
 		return NULL;
 	}
 	
-	// Temporal elements
-	Node_t *base = tempGraph();
-	start = base;
-
 	// Processing
 	Container_t *root = dijkstra(start, end);
 

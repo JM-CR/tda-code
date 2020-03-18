@@ -29,6 +29,13 @@ typedef enum direction Direction_t;   // Used to track c_state
 /* Function prototypes */
 
 /**
+ * Creates a temporal graph; used to test the Dijkstra's algorithm.
+ *
+ * @return Pointer to the root node.
+ */
+Node_t *tempGraph( void );
+
+/**
  * Creates a grid fully connected with size of r * c.
  * If one or both parameters are zero, it will return a NULL pointer.
  *

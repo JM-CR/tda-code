@@ -12,13 +12,9 @@
 #include "dijkstra.h"
 
 int main(void) {
-	// Create
-	int cols = 5;
-	int rows = 1;
-	Node_t *root = createGraph(rows, cols);
-
 	// Dijkstra's test
-	Path_t *path = calculatePath(root, 5);
+	Node_t *root = tempGraph();
+	calculatePath(root, 5);
 
     return 0;
 }

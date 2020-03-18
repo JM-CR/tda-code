@@ -50,7 +50,7 @@ static int8_t getMask( Direction_t from ) {
  * @param insertNode Node to insert.
  * @param slot Insertion's orientation.
  */
-extern void setSlot( Node_t **baseNode, Node_t **insertNode, Direction_t slot ) {
+static void setSlot( Node_t **baseNode, Node_t **insertNode, Direction_t slot ) {
 	// Update node
 	addConnection(baseNode, insertNode, slot);
 	(*baseNode)->c_state |= getMask(slot);
@@ -153,6 +153,42 @@ static bool containsId( int id, int elements[], size_t size ) {
 // -----------------------------
 
 /* Implementation of the public functions */
+
+Node_t *tempGraph( void ) {
+	// Create nodes
+	Node_t **node = calloc(5, sizeof(Node_t));
+	node[0] = newNode(1, 0, NULL, 4, 0);
+	node[1] = newNode(2, 1, NULL, 4, 0);
+	node[2] = newNode(3, 6, NULL, 4, 0);
+	node[3] = newNode(4, 2, NULL, 4, 0);
+	node[4] = newNode(5, 4, NULL, 4, 0);
+
+	// Connect first node
+	setSlot(&node[0], &node[1], DOWN);
+	setSlot(&node[0], &node[2], RIGHT);
+
+	// Connect second node
+	setSlot(&node[1], &node[0], UP);
+	setSlot(&node[1], &node[2], DOWN);
+	setSlot(&node[1], &node[3], RIGHT);
+
+	// Connect third node
+	setSlot(&node[2], &node[0], LEFT);
+	setSlot(&node[2], &node[1], UP);
+	setSlot(&node[2], &node[3], DOWN);
+	setSlot(&node[2], &node[4], RIGHT);
+
+	// Connect forth node
+	setSlot(&node[3], &node[1], LEFT);
+	setSlot(&node[3], &node[2], UP);
+	setSlot(&node[3], &node[4], RIGHT);
+
+	// Connect fifth node
+	setSlot(&node[4], &node[2], UP);
+	setSlot(&node[4], &node[3], DOWN);
+
+	return node[0];
+}
 
 Node_t *createGraph( size_t rows, size_t cols ) {
 	// Guards
