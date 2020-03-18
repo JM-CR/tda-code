@@ -208,16 +208,24 @@ Path_t *calculatePath( Node_t *start, unsigned int end ) {
 	
 	// Processing
 	Container_t *root = dijkstra(start, end);
-
+	int sdfTotal = 0;
+	int i = 0;
+	Node_t *nodosTotal[5];
 	// Temporal print
 	while ( root != NULL ) {
 		printContainer(root);
+		nodosTotal[i] = root->node;
+		i = i +1;
+		sdfTotal = sdfTotal + root->sdf;
 		root = root->next;
 	}
+	printf("el numero de nodos es: %d\n",i);
 
 	// Save results
 	Path_t *path = malloc(sizeof(Path_t));
-	path->sdf = 0;
-	path->route = NULL;
+	path->sdf = sdfTotal;
+	for(int k = 0; k<i;k++){
+		path->route[k] = nodosTotal[k];
+	}
 	return path;
 }

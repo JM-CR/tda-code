@@ -8,13 +8,13 @@
 // System and application specific headers
 // ------------------------------------------
 #include <stdlib.h>
+#include <stdio.h>
 #include "graph.h"
 #include "dijkstra.h"
 
 int main(void) {
 	// Dijkstra's test
 	Node_t *root = tempGraph();
-	calculatePath(root, 5);
-
+	Path_t *path = calculatePath(root, 5);
     return 0;
 }

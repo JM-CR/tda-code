@@ -19,7 +19,7 @@
 
 typedef struct path {
 	unsigned int sdf;
-	unsigned int *route;
+	Node_t *route[];
 } Path_t;
 
 /* Function prototypes */
