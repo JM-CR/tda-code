@@ -141,20 +141,55 @@ static void printContainer( Container_t *container ) {
 }
 
 /**
+ * Once the dijkstra algorithm has ended the results are processed here.
+ *
+ * @param root Starting container.
+ * @param lastState Ending container.
+ * @param totalNodes Number of nodes that the path has.
+ * @return Best path and cost.
+ */
+static Path_t *processResults( Container_t *root, Container_t *lastState, unsigned int totalNodes ) {
+	// Guards
+	if ( root == NULL || lastState == NULL ) {
+		return NULL;
+	}
+
+	// Get route
+	Path_t *path = malloc(sizeof(Path_t));
+	Node_t **route = calloc(totalNodes, sizeof(Node_t));
+
+	unsigned int index = totalNodes - 1;
+	Container_t *currentState = lastState;
+	while ( currentState != NULL ) {
+		route[index--] = currentState->node;
+		printContainer(currentState);
+		currentState = findContainer(root, currentState->previous, 0);
+	}
+
+	// Save results
+	path->sdf = lastState->sdf;
+	path->route = route;
+	path->totalNodes = totalNodes;
+	return path;
+}
+
+/**
  * Implements the dijkstra's algorithm.
  *
  * @param start Starting node.
  * @param end Ending id.
- * @return Linked list with the results of the algorithm.
+ * @return Best path and cost.
  */
-static Container_t *dijkstra( Node_t *start, unsigned int end ) {
+static Path_t *dijkstra( Node_t *start, unsigned int end ) {
 	// Initialize
 	Node_t *current = start;
+	Container_t *lastState = NULL;
 	Container_t *root = createContainer(start, NULL, false, 0);
 	Direction_t searchOrder[] = { UP, RIGHT, LEFT, DOWN };
 
 	// Find path
 	bool found = false;
+	unsigned int totalNodes = 0;
 	while ( !found ) {
 		// Look for adjacent nodes
 		Node_t *bestAdjacent = NULL;
@@ -182,15 +217,17 @@ static Container_t *dijkstra( Node_t *start, unsigned int end ) {
 
 		// Next iteration
 		if ( current->id == end ) {	
-			found = true;	
+			found = true;
+			lastState = currentState;
 		} else if ( bestAdjacent == NULL ) {
 			current = currentState->previous;
 		} else {
 			current = bestAdjacent;
 		}
+		totalNodes++;
 	}
 
-	return root;
+	return processResults(root, lastState, totalNodes);
 }
 
 
@@ -206,25 +243,22 @@ Path_t *calculatePath( Node_t *start, unsigned int end ) {
 		return NULL;
 	}
 	
-	// Processing
-	Container_t *root = dijkstra(start, end);
-	int sdfTotal = 0;
-	int i = 0;
-	Node_t *nodosTotal[5];
-	// Temporal print
-	while ( root != NULL ) {
-		printContainer(root);
-		nodosTotal[i] = root->node;
-		i = i +1;
-		sdfTotal = sdfTotal + root->sdf;
-		root = root->next;
+	// Algorithm
+	return dijkstra(start, end);
+}
+
+void printPath( Path_t *path ) {
+	// Guard
+	if ( path == NULL || path->totalNodes == 0 ) {
+		return;
 	}
 
-	// Save results
-	Path_t *path = malloc(sizeof(Path_t));
-	path->sdf = sdfTotal;
-	for(int k = 0; k<i;k++){
-		path->route[k] = nodosTotal[k];
+	// Output text
+	printf("\n-------------------\n");
+	printf("\nSDF: %d", path->sdf);
+	printf("\nTotal nodes: %d", path->totalNodes);
+	printf("\nBest route: ");
+	for ( unsigned int i = 0, size = path->totalNodes; i < size; ++i ) {
+		printf("%d%s", path->route[i]->id, i == (size - 1) ? "\n\n" : " -> ");
 	}
-	return path;
 }

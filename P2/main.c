@@ -15,6 +15,7 @@
 int main(void) {
 	// Dijkstra's test
 	Node_t *root = tempGraph();
-	Path_t *path = calculatePath(root, 5);
+	Path_t *bestPath = calculatePath(root, 5);
+	printPath(bestPath);
     return 0;
 }

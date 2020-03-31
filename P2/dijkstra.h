@@ -19,7 +19,8 @@
 
 typedef struct path {
 	unsigned int sdf;
-	Node_t *route[];
+	Node_t **route;
+	unsigned int totalNodes;
 } Path_t;
 
 /* Function prototypes */
@@ -32,5 +33,13 @@ typedef struct path {
  * @return Calculated results.
  */
 Path_t *calculatePath( Node_t *start, unsigned int end );
+
+
+/**
+ * Prints the content of a Path_t struct.
+ *
+ * @param path Object to print.
+ */
+void printPath( Path_t *path );
 
 #endif
